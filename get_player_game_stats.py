@@ -15,6 +15,7 @@ def get_game_urls(year, week):
     """
     Get the box score URL for each game by team
     """
+    base_url = "https://www.pro-football-reference.com"
     url = "https://www.pro-football-reference.com/years/{}/week_{}.htm".format(year,week)
 
     response = get(url)
@@ -32,7 +33,7 @@ def get_game_urls(year, week):
         try:
             losing_team_strings = [text for text in game.find(attrs={"class": "loser"}).stripped_strings]
             losing_teams.append(losing_team_strings[0])
-        except AttributeError as identifier:
+        except AttributeError:
             pass
         
 
@@ -44,12 +45,20 @@ def get_game_urls(year, week):
             pass
 
         for link in game.find_all(href=re.compile("boxscores")):
-            game_link.append(link.get('href'))
+            game_link.append(base_url + link.get('href'))
 
-    print(losing_teams)
-    print(winning_teams)
-    print(game_link)
+    # print(losing_teams)
+    # print(winning_teams)
+    # print(game_link)
 
-    game_urls = {} 
+    losing_game_urls = dict(zip(losing_teams, game_link)) 
+    winning_game_urls = dict(zip(winning_teams, game_link)) 
 
-    return game_urls
+    # print(losing_game_urls)
+    # print(winning_game_urls)
+
+    losing_game_urls.update(winning_game_urls)
+
+    # print(losing_game_urls)
+
+    return losing_game_urls
