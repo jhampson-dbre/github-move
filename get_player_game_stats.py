@@ -10,8 +10,6 @@ def get_player_stats_from_game(team, year, week):
     """
     Get player stats for a particular game
     """
-    url = ""
-
 
 def get_game_urls(year, week):
     """
