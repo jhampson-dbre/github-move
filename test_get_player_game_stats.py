@@ -14,3 +14,15 @@ def test_get_player_stats_from_game():
     expected_team_stats = {}
 
     assert ff_team.get_player_stats_from_game(team, year, week) == expected_team_stats
+
+def test_get_urls():
+    """
+    Given a year and week, it should return
+    a dictionary of teams and their game
+    stats URL
+    """
+
+    year = "2018"
+    week = "1"
+
+    assert ff_team.get_game_urls(year, week).get('Atlanta Falcons') == "https://www.pro-football-reference.com/boxscores/201809060phi.htm"
