@@ -1,7 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Build pipeline for Fantasy Football Team Builder 
 
 trigger:
 - master
@@ -27,8 +24,7 @@ steps:
 
 - script: |
     pip install pytest
-    pip install pytest-cov
-    pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+    pytest ./ --junitxml=junit/test-results.xml
   displayName: 'Test with pytest'
 
 - task: PublishTestResults@2
@@ -36,9 +32,3 @@ steps:
   inputs:
     testResultsFiles: '**/test-*.xml'
     testRunTitle: 'Publish test results for Python'
-
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
