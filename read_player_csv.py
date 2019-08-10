@@ -20,6 +20,16 @@ def get_best_player(position, player_df):
 
     return best_player
 
+
+def get_player_score_by_system(player, scoring_system, player_df):
+    scoring_system_lookup = {
+        "standard": "FantPt",
+        "ppr": "PPR",
+        "rank": "OvRank"
+    }
+    player_score = player_df.loc[player, scoring_system_lookup[scoring_system]]
+
+    return player_score
 # player_df = player_df[~player_df.Player.isin(drafted_players)]
 # player_df = player_df[~player_df.isin(drafted_players)]
 # print(player_df.head(200).groupby('FantPos').describe()[['PPR']])
