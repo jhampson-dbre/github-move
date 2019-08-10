@@ -1,3 +1,4 @@
+import argparse
 import pandas as pd
 # drafted_players = [
 #     'Todd Gurley',
@@ -37,6 +38,13 @@ def get_player_score_by_system(player, scoring_system, player_df):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Fantasy Football Draft Picker')
+    parser.add_argument('--scoring-system',
+                        default='rank',
+                        help='Scoring system (default: Overall rank)')
+
+    args = parser.parse_args()
     positions = [
         'QB',
         'WR',
@@ -48,8 +56,9 @@ if __name__ == "__main__":
 
     for position in positions:
         player = get_best_player(position, player_df)
-        overall_rank = player_df.loc[player, 'OvRank']
-        print("{} - {} - {}".format(player, position, overall_rank))
+        player_score = get_player_score_by_system(
+            player, args.scoring_system, player_df)
+        print("{} - {} - {}".format(player, position, player_score))
 
 # player_df.head(200).groupby('FantPos').mean()[['FantPt']]
 # player_df.head(200).groupby('FantPos').median()[['FantPt']]
