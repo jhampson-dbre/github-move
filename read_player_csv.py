@@ -38,7 +38,8 @@ if __name__ == "__main__":
 
     for position in positions:
         player = get_best_player(position, player_df)
-        print("{} - {}".format(player, position))
+        overall_rank = player_df.loc[player, 'OvRank']
+        print("{} - {} - {}".format(player, position, overall_rank))
 
 # player_df.head(200).groupby('FantPos').mean()[['FantPt']]
 # player_df.head(200).groupby('FantPos').median()[['FantPt']]
