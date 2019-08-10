@@ -16,19 +16,23 @@ def import_player_stats():
     return player_df
 
 
-def get_best_player(position, player_df):
-    best_player = player_df[player_df['FantPos'] == position].head(1).index[0]
+def get_best_player(position, player_df, scoring_system):
+
+    if scoring_system == 'OvRank':
+        low_to_high_sort = True
+    else:
+        low_to_high_sort = False
+
+    player_df = player_df[player_df['FantPos'] == position]
+    player_df = player_df.sort_values(
+        [scoring_system], axis=0, ascending=low_to_high_sort)
+    best_player = player_df.head(1).index[0]
 
     return best_player
 
 
 def get_player_score_by_system(player, scoring_system, player_df):
-    scoring_system_lookup = {
-        "standard": "FantPt",
-        "ppr": "PPR",
-        "rank": "OvRank"
-    }
-    player_score = player_df.loc[player, scoring_system_lookup[scoring_system]]
+    player_score = player_df.loc[player, scoring_system]
 
     return player_score
 # player_df = player_df[~player_df.Player.isin(drafted_players)]
@@ -45,6 +49,11 @@ if __name__ == "__main__":
                         help='Scoring system (default: Overall rank)')
 
     args = parser.parse_args()
+    scoring_system_lookup = {
+        "standard": "FantPt",
+        "ppr": "PPR",
+        "rank": "OvRank"
+    }
     positions = [
         'QB',
         'WR',
@@ -55,9 +64,10 @@ if __name__ == "__main__":
     player_df = import_player_stats()
 
     for position in positions:
-        player = get_best_player(position, player_df)
+        player = get_best_player(
+            position, player_df, scoring_system_lookup[args.scoring_system])
         player_score = get_player_score_by_system(
-            player, args.scoring_system, player_df)
+            player, scoring_system_lookup[args.scoring_system], player_df)
         print("{} - {} - {}".format(player, position, player_score))
 
 # player_df.head(200).groupby('FantPos').mean()[['FantPt']]
