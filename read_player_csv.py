@@ -1,29 +1,45 @@
 import pandas as pd
-
 # drafted_players = [
 #     'Todd Gurley',
 #     'Christian McCaffrey'
 # ]
 
-fields = ['Rk', 'Player', 'Tm', 'FantPos',
-          'FantPt', 'PPR', 'VBD', 'PosRank', 'OvRank']
-# fields = ['Rk', 'Player', 'FantPt', 'PPR', 'VBD', 'PosRank', 'OvRank']
-player_df = pd.read_csv("data/player_position.csv",
-                        usecols=fields, index_col='Player')
+
+def import_player_stats():
+    fields = ['Rk', 'Player', 'Tm', 'FantPos',
+              'FantPt', 'PPR', 'VBD', 'PosRank', 'OvRank']
+    # fields = ['Rk', 'Player', 'FantPt', 'PPR', 'VBD', 'PosRank', 'OvRank']
+    player_df = pd.read_csv("data/player_position.csv",
+                            usecols=fields, index_col='Player')
+
+    return player_df
+
+
+def get_best_player(position, player_df):
+    best_player = player_df[player_df['FantPos'] == position].head(1).index[0]
+
+    return best_player
 
 # player_df = player_df[~player_df.Player.isin(drafted_players)]
 # player_df = player_df[~player_df.isin(drafted_players)]
 # print(player_df.head(200).groupby('FantPos').describe()[['PPR']])
 # player_df.head(5).diff(periods=-1)
-positions = [
-    'QB',
-    'WR',
-    'RB',
-    'TE'
-]
 
-for position in positions:
-    player_df[player_df.FantPos == position].head()
+
+if __name__ == "__main__":
+    positions = [
+        'QB',
+        'WR',
+        'RB',
+        'TE'
+    ]
+
+    player_df = import_player_stats()
+
+    for position in positions:
+        player = get_best_player(position, player_df)
+        print("{} - {}".format(player, position))
+
 # player_df.head(200).groupby('FantPos').mean()[['FantPt']]
 # player_df.head(200).groupby('FantPos').median()[['FantPt']]
 # player_df.groupby('FantPos').count()
