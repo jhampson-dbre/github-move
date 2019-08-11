@@ -23,7 +23,7 @@ def get_best_player(position, player_df):
 
 
 def exclude_players(player_df, exclude_list):
-    return player_df.drop(index=exclude_list)
+    return player_df.drop(index=exclude_list, errors='ignore')
 
 # print(player_df.head(200).groupby('FantPos').describe()[['PPR']])
 # player_df.head(5).diff(periods=-1)
