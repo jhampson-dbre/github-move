@@ -20,8 +20,10 @@ def get_best_player(position, player_df):
 
     return best_player
 
-# player_df = player_df[~player_df.Player.isin(drafted_players)]
-# player_df = player_df[~player_df.isin(drafted_players)]
+
+def exclude_players(player_df, exclude_list):
+    return player_df.drop(index=exclude_list)
+
 # print(player_df.head(200).groupby('FantPos').describe()[['PPR']])
 # player_df.head(5).diff(periods=-1)
 
