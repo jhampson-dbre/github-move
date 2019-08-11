@@ -43,6 +43,7 @@ if __name__ == "__main__":
         player_exclusions = yaml.safe_load(stream)
 
     player_df = exclude_players(player_df, player_exclusions['drafted'])
+    player_df = exclude_players(player_df, player_exclusions['other'])
 
     for position in positions:
         player = get_best_player(position, player_df)
