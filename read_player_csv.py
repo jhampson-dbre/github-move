@@ -1,4 +1,5 @@
 import pandas as pd
+import yaml
 # drafted_players = [
 #     'Todd Gurley',
 #     'Christian McCaffrey'
@@ -37,6 +38,11 @@ if __name__ == "__main__":
     ]
 
     player_df = import_player_stats()
+
+    with open("./data/player_exclusions.yaml", 'r') as stream:
+        player_exclusions = yaml.safe_load(stream)
+
+    player_df = exclude_players(player_df, player_exclusions['drafted'])
 
     for position in positions:
         player = get_best_player(position, player_df)
