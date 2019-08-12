@@ -15,6 +15,17 @@ def import_player_stats():
     return player_df
 
 
+def import_player_projections(scoring_system="standard"):
+    fields = ["Rank", "Player", "Pos", "Best",
+              "Worst", "Avg", "Std Dev", "ADP", "vs. ADP"]
+    projected_player_df = pd.read_csv("data/FantasyPros_2019_Draft_Overall_Rankings_{}.csv".format(scoring_system),
+                                      usecols=fields, index_col='Player')
+    projected_player_df.replace(
+        {'Pos': r'\d+$'}, {'Pos': ''}, regex=True, inplace=True)
+
+    return projected_player_df
+
+
 def get_best_player(position, player_df):
     best_player = player_df[player_df['FantPos'] == position].head(1).index[0]
 
