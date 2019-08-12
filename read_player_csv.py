@@ -49,14 +49,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Fantasy Football Draft Picker')
     parser.add_argument('--scoring-system',
-                        default='rank',
-                        help='Scoring system (default: Overall rank)')
+                        default='standard',
+                        help='Scoring system (default: standard)')
 
     args = parser.parse_args()
     scoring_system_lookup = {
         "standard": "FantPt",
-        "ppr": "PPR",
-        "rank": "OvRank"
+        "ppr": "PPR"
     }
     positions = [
         'QB',
