@@ -1,23 +1,21 @@
 import argparse
 import pandas as pd
 import yaml
-# drafted_players = [
-#     'Todd Gurley',
-#     'Christian McCaffrey'
-# ]
 
 
-def import_player_stats():
+def import_player_2018_stats():
     fields = ['Rk', 'Player', 'Tm', 'FantPos',
               'FantPt', 'PPR', 'VBD', 'PosRank', 'OvRank']
     # fields = ['Rk', 'Player', 'FantPt', 'PPR', 'VBD', 'PosRank', 'OvRank']
     player_df = pd.read_csv("data/player_position.csv",
                             usecols=fields, index_col='Player')
+    player_df.columns = ['2018_Rank', 'Tm', 'FantPos', '2018_standard_Pts',
+                         '2018_ppr_Pts', 'VDB', '2018_Pos_Rank', '2018_Overall_Rank']
 
     return player_df
 
 
-def import_player_projections(scoring_system="standard"):
+def import_player_2019_rank(scoring_system="standard"):
     fields = ["Rank", "Player", "Pos", "Best",
               "Worst", "Avg", "Std Dev", "ADP", "vs. ADP"]
     projected_player_df = pd.read_csv("data/FantasyPros_2019_Draft_Overall_Rankings_{}.csv".format(scoring_system),
@@ -25,22 +23,22 @@ def import_player_projections(scoring_system="standard"):
     projected_player_df.replace(
         {'Pos': r'\d+$'}, {'Pos': ''}, regex=True, inplace=True)
 
+    projected_player_df.columns = ['2019_Rank', 'Pos',
+                                   'Best', 'Worst', 'Avg', 'Std Dev', 'ADP', 'vs. ADP']
+
     return projected_player_df
 
 
-def get_best_player(position, player_df, scoring_system):
+def get_best_player(position, player_df, ranking_system):
+    ranking_system_lookup = {
+        "Rank": "2019_Rank"
+    }
 
-    if scoring_system == 'OvRank':
-        low_to_high_sort = True
-    else:
-        low_to_high_sort = False
-
-    player_df = player_df[player_df['FantPos'] == position]
+    player_df = player_df[player_df['Pos'] == position]
     player_df = player_df.sort_values(
-        [scoring_system], axis=0, ascending=low_to_high_sort)
-    best_player = player_df.head(1).index[0]
+        [ranking_system_lookup[ranking_system]], axis=0, ascending=True)
 
-    return best_player
+    return player_df
 
 
 def get_player_score_by_system(player, scoring_system, player_df):
@@ -52,9 +50,6 @@ def get_player_score_by_system(player, scoring_system, player_df):
 def exclude_players(player_df, exclude_list):
     return player_df.drop(index=exclude_list, errors='ignore')
 
-# print(player_df.head(200).groupby('FantPos').describe()[['PPR']])
-# player_df.head(5).diff(periods=-1)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -62,6 +57,9 @@ if __name__ == "__main__":
     parser.add_argument('--scoring-system',
                         default='standard',
                         help='Scoring system (default: standard)')
+    parser.add_argument('--ranking-system',
+                        default='Rank',
+                        help='Ranking system (default: Rank)')
 
     args = parser.parse_args()
     scoring_system_lookup = {
@@ -75,7 +73,9 @@ if __name__ == "__main__":
         'TE'
     ]
 
-    player_df = import_player_stats()
+    player_df = import_player_2018_stats().join(import_player_2019_rank(),
+                                                lsuffix='_hist', rsuffix='_pred', how='right')
+    # print(player_df.head(15))
 
     with open("./data/player_exclusions.yaml", 'r') as stream:
         player_exclusions = yaml.safe_load(stream)
@@ -84,13 +84,7 @@ if __name__ == "__main__":
     player_df = exclude_players(player_df, player_exclusions['other'])
 
     for position in positions:
-        player = get_best_player(
-            position, player_df, scoring_system_lookup[args.scoring_system])
-        player_score = get_player_score_by_system(
-            player, scoring_system_lookup[args.scoring_system], player_df)
-        print("{} - {} - {}".format(player, position, player_score))
-
-# player_df.head(200).groupby('FantPos').mean()[['FantPt']]
-# player_df.head(200).groupby('FantPos').median()[['FantPt']]
-# player_df.groupby('FantPos').count()
-# player_df.head(200).groupby('FantPos').count()
+        ranked_players_by_position = get_best_player(
+            position, player_df, args.ranking_system)
+        print(ranked_players_by_position[[
+              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_Rank', 'Best', 'Worst', 'Avg', 'ADP', 'vs. ADP']].head(5))
