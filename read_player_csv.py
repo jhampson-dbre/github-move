@@ -18,7 +18,7 @@ def import_player_2018_stats():
 def import_player_2019_rank(scoring_system="standard"):
     fields = ["Rank", "Player", "Pos", "Best",
               "Worst", "Avg", "Std Dev", "ADP", "vs. ADP"]
-    projected_player_df = pd.read_csv("data/FantasyPros_2019_Draft_Overall_Rankings_{}.csv".format(scoring_system),
+    projected_player_df = pd.read_csv("data/2019_overall_rankings_{}.csv".format(scoring_system),
                                       usecols=fields, index_col='Player')
     projected_player_df.replace(
         {'Pos': r'\d+$'}, {'Pos': ''}, regex=True, inplace=True)
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         'TE'
     ]
 
-    player_df = import_player_2018_stats().join(import_player_2019_rank(),
+    player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system=args.scoring_system),
                                                 lsuffix='_hist', rsuffix='_pred', how='right')
     # print(player_df.head(15))
 
