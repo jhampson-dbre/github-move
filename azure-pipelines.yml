@@ -35,6 +35,7 @@ steps:
 
 - script: |
     tar -zcvf $(Build.ArtifactStagingDirectory)/ffb_draft_picker.tar.gz ./read_player_csv.py ./requirements.txt ./data/*
+  displayName: 'Create tar of source files'
 
 - task: PublishBuildArtifacts@1
   inputs:
