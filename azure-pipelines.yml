@@ -34,7 +34,7 @@ steps:
     testRunTitle: 'Publish test results for Python'
 
 - script: |
-    tar -zcvf $(Build.SourcesDirectory)/ffb_draft_picker.tar.gz ./read_player_csv.py ./requirements.txt ./data/*
+    tar -zcvf $(Build.ArtifactStagingDirectory))/ffb_draft_picker.tar.gz ./read_player_csv.py ./requirements.txt ./data/*
 
 - task: PublishBuildArtifacts@1
   inputs:
