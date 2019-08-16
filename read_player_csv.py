@@ -56,10 +56,12 @@ if __name__ == "__main__":
         description='Fantasy Football Draft Picker')
     parser.add_argument('--scoring-system',
                         default='standard',
-                        help='Scoring system (default: standard)')
+                        choices=('standard', 'ppr'),
+                        help='Scoring system')
     parser.add_argument('--ranking-system',
                         default='Rank',
-                        help='Ranking system (default: Rank)')
+                        choices=['Rank'],
+                        help='Ranking system (Expert Consesus, ADP, etc). Only Expert Consensus (Rank) supported.')
 
     args = parser.parse_args()
     scoring_system_lookup = {
