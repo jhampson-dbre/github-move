@@ -24,12 +24,12 @@ def test_get_best_player_at_start_of_draft(test_position, test_ranking_system, e
         test_position, ffb.import_player_2018_stats().join(ffb.import_player_2019_rank(), how='right'), ranking_system=test_ranking_system).index[0] == expected_player
 
 
-@pytest.mark.skip(reason="get_player_score_by_system is not currently used")
+# @pytest.mark.skip(reason="get_player_score_by_system is not currently used")
 @pytest.mark.parametrize("test_player,test_scoring_system,expected_score", [
-    ("Patrick Mahomes", "FantPt", 417),
-    ("Patrick Mahomes", "PPR", 417.1),
-    ("Todd Gurley", "FantPt", 313),
-    ("Todd Gurley", "PPR", 372.1)])
+    ("Patrick Mahomes", "standard", 417),
+    ("Patrick Mahomes", "ppr", 417.1),
+    ("Todd Gurley", "standard", 313),
+    ("Todd Gurley", "ppr", 372.1)])
 def test_get_player_rank_by_scoring_system(test_player, test_scoring_system, expected_score):
     """
     Given a valid player and scoring system,
@@ -94,3 +94,22 @@ def test_no_errors_if_excluded_player_is_not_in_data(test_excluded_players_list,
     # have been drafted that exist in the data
     assert test_player_df.index.size - \
         num_excluded_in_data == result_player_df.index.size
+
+
+@pytest.mark.parametrize("test_position,expected_player", [("QB", "Patrick Mahomes"),
+                                                           ("RB", "Saquon Barkley"),
+                                                           ("WR", "DeAndre Hopkins"),
+                                                           ("TE", "Travis Kelce")])
+def test_get_best_player_at_start_of_draft(test_position, expected_player):
+    """
+    Given no players have been drafted,
+    it should return the overall best player from
+    each position
+    """
+    player_df = ffb.import_player_2018_stats().join(ffb.import_player_2019_rank(scoring_system='standard'),
+                                                    lsuffix='_hist', rsuffix='_pred', how='right')
+    ranked_players_by_position = ffb.get_best_player(
+        test_position, player_df, 'Rank')
+    # test_data = ffb.import_player_stats
+    assert ffb.get_best_player_name(
+        ranked_players_by_position) == expected_player

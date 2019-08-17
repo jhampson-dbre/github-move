@@ -42,13 +42,18 @@ def get_best_player(position, player_df, ranking_system):
 
 
 def get_player_score_by_system(player, scoring_system, player_df):
-    player_score = player_df.loc[player, scoring_system]
+    player_score = player_df.loc[player, '2018_{}_Pts'.format(scoring_system)]
 
     return player_score
 
 
 def exclude_players(player_df, exclude_list):
     return player_df.drop(index=exclude_list, errors='ignore')
+
+
+def get_best_player_name(player_df):
+    best_player_name = player_df.head(1).index[0]
+    return best_player_name
 
 
 if __name__ == "__main__":
@@ -88,5 +93,14 @@ if __name__ == "__main__":
     for position in positions:
         ranked_players_by_position = get_best_player(
             position, player_df, args.ranking_system)
+
+        best_player_name = get_best_player_name(ranked_players_by_position)
+
+        best_player_points = get_player_score_by_system(
+            best_player_name, args.scoring_system, ranked_players_by_position)
+
+        ranked_players_by_position['2018_{}_Pts_Diff'.format(
+            args.scoring_system)] = ranked_players_by_position['2018_{}_Pts'.format(args.scoring_system)] - best_player_points
+
         print(ranked_players_by_position[[
-              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_Rank', 'Best', 'Worst', 'Avg', 'ADP', 'vs. ADP']].head(5))
+              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_Rank', 'Best', 'Worst', 'Avg', 'ADP', 'vs. ADP', '2018_{}_Pts_Diff'.format(args.scoring_system)]].head(5))
