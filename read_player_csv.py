@@ -29,20 +29,45 @@ def import_player_2019_rank(scoring_system="standard"):
     return projected_player_df
 
 
-def get_best_player(position, player_df, ranking_system):
+def import_player_2019_point_projections(position, scoring_system="standard"):
+    fields = ["Player", "FPTS"]
+    projected_player_df = pd.read_csv("data/2019_projections_{}_{}.csv".format(scoring_system, position),
+                                      usecols=fields, index_col='Player')
+
+    projected_player_df.columns = ['2019_{}_Pts'.format(scoring_system)]
+
+    return projected_player_df
+
+
+def initialize_player_stats(scoring_system):
+    player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system),
+                                                lsuffix='_hist', rsuffix='_pred', how='right')
+
+    with open("./data/player_exclusions.yaml", 'r') as stream:
+        player_exclusions = yaml.safe_load(stream)
+
+    player_df = exclude_players(player_df, player_exclusions['drafted'])
+    player_df = exclude_players(player_df, player_exclusions['other'])
+
+    return player_df
+
+
+def get_best_player(position, player_df, ranking_system, scoring_system):
     ranking_system_lookup = {
         "Rank": "2019_Rank"
     }
 
-    player_df = player_df[player_df['Pos'] == position]
+    player_df = player_df[player_df['Pos'] == position].join(import_player_2019_point_projections(
+        position=position, scoring_system=scoring_system))
     player_df = player_df.sort_values(
         [ranking_system_lookup[ranking_system]], axis=0, ascending=True)
 
     return player_df
 
 
-def get_player_score_by_system(player, scoring_system, player_df):
-    player_score = player_df.loc[player, '2018_{}_Pts'.format(scoring_system)]
+def get_player_score_by_system_and_year(player, scoring_system, year, player_df):
+    player_score = player_df.loc[player,
+                                 '{}_{}_Pts'.format(year, scoring_system)]
 
     return player_score
 
@@ -80,27 +105,35 @@ if __name__ == "__main__":
         'TE'
     ]
 
-    player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system=args.scoring_system),
-                                                lsuffix='_hist', rsuffix='_pred', how='right')
+    years = [
+        '2018',
+        '2019'
+    ]
+
+    # player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system=args.scoring_system),
+    #                                             lsuffix='_hist', rsuffix='_pred', how='right')
     # print(player_df.head(15))
+    player_df = initialize_player_stats(scoring_system=args.scoring_system)
 
-    with open("./data/player_exclusions.yaml", 'r') as stream:
-        player_exclusions = yaml.safe_load(stream)
+    # with open("./data/player_exclusions.yaml", 'r') as stream:
+    #     player_exclusions = yaml.safe_load(stream)
 
-    player_df = exclude_players(player_df, player_exclusions['drafted'])
-    player_df = exclude_players(player_df, player_exclusions['other'])
+    # player_df = exclude_players(player_df, player_exclusions['drafted'])
+    # player_df = exclude_players(player_df, player_exclusions['other'])
 
     for position in positions:
+
         ranked_players_by_position = get_best_player(
-            position, player_df, args.ranking_system)
+            position, player_df, args.ranking_system, args.scoring_system)
 
         best_player_name = get_best_player_name(ranked_players_by_position)
 
-        best_player_points = get_player_score_by_system(
-            best_player_name, args.scoring_system, ranked_players_by_position)
+        for year in years:
+            best_player_points = get_player_score_by_system_and_year(
+                best_player_name, args.scoring_system, year, ranked_players_by_position)
 
-        ranked_players_by_position['2018_{}_Pts_Diff'.format(
-            args.scoring_system)] = ranked_players_by_position['2018_{}_Pts'.format(args.scoring_system)] - best_player_points
+            ranked_players_by_position['{}_{}_Pts_Diff'.format(year,
+                                                               args.scoring_system)] = ranked_players_by_position['{}_{}_Pts'.format(year, args.scoring_system)] - best_player_points
 
         print(ranked_players_by_position[[
-              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_Rank', 'Best', 'Worst', 'Avg', 'ADP', 'vs. ADP', '2018_{}_Pts_Diff'.format(args.scoring_system)]].head(5))
+              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', 'Best', 'Worst', 'ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]].head(5))

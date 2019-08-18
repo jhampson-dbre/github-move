@@ -30,13 +30,13 @@ def test_get_best_player_at_start_of_draft(test_position, test_ranking_system, e
     ("Patrick Mahomes", "ppr", 417.1),
     ("Todd Gurley", "standard", 313),
     ("Todd Gurley", "ppr", 372.1)])
-def test_get_player_rank_by_scoring_system(test_player, test_scoring_system, expected_score):
+def test_get_player_rank_by_scoring_system_and_year(test_player, test_scoring_system, expected_score):
     """
     Given a valid player and scoring system,
     it should return the score for the player
     """
-    assert ffb.get_player_score_by_system(
-        test_player, test_scoring_system, ffb.import_player_2018_stats()) == expected_score
+    assert ffb.get_player_score_by_system_and_year(
+        test_player, test_scoring_system, '2018', ffb.import_player_2018_stats()) == expected_score
 
 
 @pytest.mark.parametrize("test_excluded_players_list", [[],
@@ -106,10 +106,11 @@ def test_get_best_player_at_start_of_draft(test_position, expected_player):
     it should return the overall best player from
     each position
     """
-    player_df = ffb.import_player_2018_stats().join(ffb.import_player_2019_rank(scoring_system='standard'),
-                                                    lsuffix='_hist', rsuffix='_pred', how='right')
+    # player_df = ffb.import_player_2018_stats().join(ffb.import_player_2019_rank(scoring_system='standard'),
+    #                                                 lsuffix='_hist', rsuffix='_pred', how='right')
+    player_df = ffb.initialize_player_stats("standard")
     ranked_players_by_position = ffb.get_best_player(
-        test_position, player_df, 'Rank')
+        test_position, player_df, 'Rank', "standard")
     # test_data = ffb.import_player_stats
     assert ffb.get_best_player_name(
         ranked_players_by_position) == expected_player
