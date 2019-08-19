@@ -108,7 +108,11 @@ def test_get_best_player_at_start_of_draft(test_position, expected_player):
     """
     # player_df = ffb.import_player_2018_stats().join(ffb.import_player_2019_rank(scoring_system='standard'),
     #                                                 lsuffix='_hist', rsuffix='_pred', how='right')
-    player_df = ffb.initialize_player_stats("standard")
+    player_exclusions = {
+        'drafted': [],
+        'other': []
+    }
+    player_df = ffb.initialize_player_stats("standard", player_exclusions)
     ranked_players_by_position = ffb.get_best_player(
         test_position, player_df, 'Rank', "standard")
     # test_data = ffb.import_player_stats

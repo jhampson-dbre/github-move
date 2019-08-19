@@ -39,12 +39,9 @@ def import_player_2019_point_projections(position, scoring_system="standard"):
     return projected_player_df
 
 
-def initialize_player_stats(scoring_system):
+def initialize_player_stats(scoring_system, player_exclusions):
     player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system),
                                                 lsuffix='_hist', rsuffix='_pred', how='right')
-
-    with open("./data/player_exclusions.yaml", 'r') as stream:
-        player_exclusions = yaml.safe_load(stream)
 
     player_df = exclude_players(player_df, player_exclusions['drafted'])
     player_df = exclude_players(player_df, player_exclusions['other'])
@@ -113,10 +110,11 @@ if __name__ == "__main__":
     # player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system=args.scoring_system),
     #                                             lsuffix='_hist', rsuffix='_pred', how='right')
     # print(player_df.head(15))
-    player_df = initialize_player_stats(scoring_system=args.scoring_system)
+    with open("./data/player_exclusions.yaml", 'r') as stream:
+        player_exclusions = yaml.safe_load(stream)
 
-    # with open("./data/player_exclusions.yaml", 'r') as stream:
-    #     player_exclusions = yaml.safe_load(stream)
+    player_df = initialize_player_stats(scoring_system=args.scoring_system, player_exclusions=player_exclusions)
+
 
     # player_df = exclude_players(player_df, player_exclusions['drafted'])
     # player_df = exclude_players(player_df, player_exclusions['other'])
