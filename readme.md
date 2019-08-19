@@ -16,7 +16,7 @@
    # Change to the directory where you unzipped the artifact
    cd $Unzip_Path
    tar -zxvf ./ffb_draft_picker.tar.gz
-   python3 -m venv .venv/bin/activate
+   python3 -m venv .venv
    source .venv/bin/activate
    pip install pip --upgrade
    pip install -r requirements.txt
