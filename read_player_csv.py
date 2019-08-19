@@ -23,6 +23,9 @@ def import_player_2019_rank(scoring_system="standard"):
     projected_player_df.replace(
         {'Pos': r'\d+$'}, {'Pos': ''}, regex=True, inplace=True)
 
+    projected_player_df.replace(
+        {'ADP': r','}, {'ADP': ''}, regex=True, inplace=True)
+
     projected_player_df.columns = ['2019_Rank', 'Pos',
                                    'Best', 'Worst', 'Avg', 'Std Dev', 'ADP', 'vs. ADP']
 
@@ -113,8 +116,8 @@ if __name__ == "__main__":
     with open("./data/player_exclusions.yaml", 'r') as stream:
         player_exclusions = yaml.safe_load(stream)
 
-    player_df = initialize_player_stats(scoring_system=args.scoring_system, player_exclusions=player_exclusions)
-
+    player_df = initialize_player_stats(
+        scoring_system=args.scoring_system, player_exclusions=player_exclusions)
 
     # player_df = exclude_players(player_df, player_exclusions['drafted'])
     # player_df = exclude_players(player_df, player_exclusions['other'])
@@ -133,5 +136,11 @@ if __name__ == "__main__":
             ranked_players_by_position['{}_{}_Pts_Diff'.format(year,
                                                                args.scoring_system)] = ranked_players_by_position['{}_{}_Pts'.format(year, args.scoring_system)] - best_player_points
 
+        ranked_players_by_position['.vs ADP'] = pd.to_numeric(ranked_players_by_position['ADP']) - len(
+            player_exclusions['drafted']) - 1
+
+        ranked_players_by_position['.vs Rank'] = pd.to_numeric(ranked_players_by_position['2019_Rank']) - len(
+            player_exclusions['drafted']) - 1
+
         print(ranked_players_by_position[[
-              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', 'Best', 'Worst', 'ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]].head(5))
+              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', '.vs Rank', 'Best', 'Worst', 'ADP', '.vs ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]].head(5))
