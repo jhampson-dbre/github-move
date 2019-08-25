@@ -92,6 +92,9 @@ if __name__ == "__main__":
                         default='Rank',
                         choices=['Rank'],
                         help='Ranking system (Expert Consesus, ADP, etc). Only Expert Consensus (Rank) supported.')
+    parser.add_argument('--num-teams',
+                        default=10,
+                        help='Number of teams in the league')
 
     args = parser.parse_args()
     scoring_system_lookup = {
@@ -115,6 +118,12 @@ if __name__ == "__main__":
     # print(player_df.head(15))
     with open("./data/player_exclusions.yaml", 'r') as stream:
         player_exclusions = yaml.safe_load(stream)
+
+    num_players_drafted = len(player_exclusions['drafted'])
+
+    print("Current Draft Round   : {}.{}".format(int((num_players_drafted + 1) /
+                                                     args.num_teams), (num_players_drafted + 1) % args.num_teams))
+    print("Total Players Drafted : {}".format(num_players_drafted))
 
     player_df = initialize_player_stats(
         scoring_system=args.scoring_system, player_exclusions=player_exclusions)
