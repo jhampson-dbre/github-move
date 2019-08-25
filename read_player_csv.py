@@ -121,6 +121,12 @@ if __name__ == "__main__":
 
     num_players_drafted = len(player_exclusions['drafted'])
 
+    curr_draft_round = int((num_players_drafted + 1) / args.num_teams)
+
+    if curr_draft_round >= 7:
+        with open("./data/sleepers.yaml", 'r') as stream:
+            sleepers = yaml.safe_load(stream)
+
     print("Current Draft Round   : {}.{}".format(int((num_players_drafted + 1) /
                                                      args.num_teams), (num_players_drafted + 1) % args.num_teams))
     print("Total Players Drafted : {}".format(num_players_drafted))
