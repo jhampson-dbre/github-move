@@ -114,28 +114,27 @@ if __name__ == "__main__":
         '2019'
     ]
 
-    # player_df = import_player_2018_stats().join(import_player_2019_rank(scoring_system=args.scoring_system),
-    #                                             lsuffix='_hist', rsuffix='_pred', how='right')
-    # print(player_df.head(15))
     with open("./data/player_exclusions.yaml", 'r') as stream:
         player_exclusions = yaml.safe_load(stream)
 
     num_players_drafted = len(player_exclusions['drafted'])
 
-    curr_draft_round = int((num_players_drafted + 1) / args.num_teams)
+    curr_draft_round = int((num_players_drafted + 1) / args.num_teams) + 1
 
     with open("./data/sleepers.yaml", 'r') as stream:
         sleepers = yaml.safe_load(stream)
 
-    print("Current Draft Round   : {}.{}".format(int((num_players_drafted + 1) /
-                                                     args.num_teams), (num_players_drafted + 1) % args.num_teams))
+    print("Current Draft Round   : {}.{}".format(
+        curr_draft_round, (num_players_drafted % args.num_teams) + 1))
+
     print("Total Players Drafted : {}".format(num_players_drafted))
 
     player_df = initialize_player_stats(
         scoring_system=args.scoring_system, player_exclusions=player_exclusions)
 
-    # player_df = exclude_players(player_df, player_exclusions['drafted'])
-    # player_df = exclude_players(player_df, player_exclusions['other'])
+    display_fields = ['Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', '.vs Rank',
+                      'Best', 'Worst', 'ADP', '.vs ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]
+
     sleepers_df = pd.DataFrame()
     for position in args.positions:
 
@@ -151,22 +150,18 @@ if __name__ == "__main__":
             ranked_players_by_position['{}_{}_Pts_Diff'.format(year,
                                                                args.scoring_system)] = ranked_players_by_position['{}_{}_Pts'.format(year, args.scoring_system)] - best_player_points
 
-        ranked_players_by_position['.vs ADP'] = pd.to_numeric(ranked_players_by_position['ADP']) - len(
-            player_exclusions['drafted']) - 1
+        ranked_players_by_position['.vs ADP'] = pd.to_numeric(
+            ranked_players_by_position['ADP']) - num_players_drafted - 1
 
-        ranked_players_by_position['.vs Rank'] = pd.to_numeric(ranked_players_by_position['2019_Rank']) - len(
-            player_exclusions['drafted']) - 1
+        ranked_players_by_position['.vs Rank'] = pd.to_numeric(
+            ranked_players_by_position['2019_Rank']) - num_players_drafted - 1
 
         if position in sleepers.keys():
             sleepers_df = sleepers_df.append(
                 ranked_players_by_position.loc[sleepers[position]])
-        # if position in ['WR']:
-        #     sleepers_df = ranked_players_by_position.loc[['Dede Westbrook']]
 
-        print(ranked_players_by_position[[
-              'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', '.vs Rank', 'Best', 'Worst', 'ADP', '.vs ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]].head(5))
+        print(ranked_players_by_position[display_fields].head(5))
 
     if args.show_sleepers:
         if not sleepers_df.empty:
-            print(sleepers_df[[
-                'Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', '.vs Rank', 'Best', 'Worst', 'ADP', '.vs ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]].sort_values('2019_Rank'))
+            print(sleepers_df[display_fields].sort_values('2019_Rank'))
