@@ -56,21 +56,21 @@
    other:
      - Sammy Watkins
 
-3. When it is your pick, Run read_player_csv.py
+3. When it is your pick, Run ffb_draft_picker.py
 
    Use the player data to make a decision on who to draft
 
    ```sh
    # Run with standard scoring
-   python read_player_csv.py
+   python ffb_draft_picker.py
 
    # Run with ppr scoring
-   python read_player_csv.py --scoring-system ppr
+   python ffb_draft_picker.py --scoring-system ppr
 
    # Show help
-   python read_player_csv.py -h
+   python ffb_draft_picker.py -h
 
-   usage: read_player_csv.py [-h] [--scoring-system {standard,ppr}]
+   usage: ffb_draft_picker.py [-h] [--scoring-system {standard,ppr}]
                           [--ranking-system {Rank}]
 
     Fantasy Football Draft Picker
@@ -84,4 +84,4 @@
                             Expert Consensus (Rank) supported.
     ```
 
-4. Continue updating the `data/player_exclusions.yaml` file and running `read_player_csv.py` until your draft is complete!
+4. Continue updating the `data/player_exclusions.yaml` file and running `ffb_draft_picker.py` until your draft is complete!

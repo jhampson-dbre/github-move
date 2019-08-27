@@ -1,9 +1,9 @@
 """
-Tests for read_player_csv.py
+Tests for ffb_draft_picker.py
 """
 import pytest
 import pandas as pd
-import read_player_csv as ffb
+import ffb_draft_picker as ffb
 
 
 @pytest.mark.parametrize("test_position, test_ranking_system, expected_player",
