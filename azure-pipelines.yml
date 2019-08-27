@@ -19,7 +19,7 @@ steps:
 
 - script: |
     python -m pip install pylint
-    pylint get_player_game_stats.py --disable=all --enable=F,E,unreachable,duplicate-key,unnecessary-semicolon,global-variable-not-assigned,unused-variable,binary-op-exception,bad-format-string,anomalous-backslash-in-string,bad-open-mode
+    pylint ffb_draft_picker.py --disable=all --enable=F,E,unreachable,duplicate-key,unnecessary-semicolon,global-variable-not-assigned,unused-variable,binary-op-exception,bad-format-string,anomalous-backslash-in-string,bad-open-mode
   displayName: 'Run lint tests'  
 
 - script: |
