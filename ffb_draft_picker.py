@@ -85,7 +85,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Fantasy Football Draft Picker')
     parser.add_argument('--scoring-system',
-                        default='standard',
+                        default='ppr',
                         choices=('standard', 'ppr'),
                         help='Scoring system')
     parser.add_argument('--ranking-system',
@@ -94,6 +94,7 @@ if __name__ == "__main__":
                         help='Ranking system (Expert Consesus, ADP, etc). Only Expert Consensus (Rank) supported.')
     parser.add_argument('--num-teams',
                         default=10,
+                        type=int,
                         help='Number of teams in the league')
     parser.add_argument('--positions',
                         nargs='+',
