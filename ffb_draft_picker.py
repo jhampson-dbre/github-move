@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
         if position in sleepers.keys():
             sleepers_df = sleepers_df.append(
-                ranked_players_by_position.loc[sleepers[position]])
+                ranked_players_by_position.filter(items=sleepers[position], axis=0))
 
         print(ranked_players_by_position[display_fields].head(5))
 
