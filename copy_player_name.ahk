@@ -10,7 +10,7 @@ Click, up
 Sleep 100
 ; Send, ^+{Right down}{Right up}^+{Right down}{Right up} ; Works for FantasyPros
 Send, ^+{Right down}{Right up} ; Works for ESPN
-Sleep 50
+Sleep 100
 Send, ^c ; copy selected text
 Sleep 100
 Send, {Alt down}{tab}
@@ -20,7 +20,7 @@ Send, ^v ; paste
 Sleep 50
 Send, ^s ; save
 Sleep 50
-Send, {Enter} ; start a new line
+Send, {Enter}-{Space} ; start a new line
 Sleep 100
 Send, {Alt down}{tab}
 Send, {Alt up}
