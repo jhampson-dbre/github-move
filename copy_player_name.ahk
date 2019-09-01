@@ -2,29 +2,26 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-^+x:: ; ctrl+shift+x
-Click, down
-Click, up
-Click, down
-Click, up
+!x:: ; alt+x
+Click, 2
 Sleep 100
 ; Send, ^+{Right down}{Right up}^+{Right down}{Right up} ; Works for FantasyPros
 Send, ^+{Right down}{Right up} ; Works for ESPN
-Sleep 100
+Sleep 300
 Send, ^c ; copy selected text
-Sleep 100
+Sleep 200
 Send, {Alt down}{tab}
 Send, {Alt up}
-Sleep 100
+Sleep 200
 Send, ^v ; paste
-Sleep 50
+Sleep 200
 Send, ^s ; save
-Sleep 50
+Sleep 200
 Send, {Enter}-{Space} ; start a new line
-Sleep 100
+Sleep 200
 Send, {Alt down}{tab}
 Send, {Alt up}
-Sleep 100
+Sleep 200
 Click, down
 Click, up
 return

@@ -62,23 +62,25 @@
    ```
 
    The draft list can be manually updated by typing the player's name as they are drafted, or by copying and pasting their name from the draft site's draft log.
-   
+  
    - Automated drafted list update using AutoHotkey (Windows only)  
 
      On Windows, the majority of the tasks for updating the draft list can be performed automatically using AutoHotKey  
-     
+  
      __NOTE 1:__ AutoHotKey must be installed before using the Automated draft list update method  
      __NOTE 2:__ You should practice using the automated draft list update in a mock draft before drafting a team for your league
      1. Before the draft starts, setup the empty drafted list. Ensure the text cursor is one space after the `-` so that the playey names will be copied to the correct spot.
+
         ```yml
          # data/player_exclusions.yaml before start of draft
-         drafted: 
-           - 
+         drafted:
+           -
          ```
+
      1. Double click on `copy_player_name.ahk` to enabled the AutoHotKey draft list update shortcut
      1. Open `player_exclusions.yaml` in a text editor and ensure the text cursor is in the correct position
-     1. Open your draft website and monitor the draft log. __DO NOT__ open any other browser tabs or other programs. 
-     1. As players are drafted, hover the mouse over the players name and press `ctrl+shift+x` to activate the shortcut. This will perform the following actions:
+     1. Open your draft website and monitor the draft log. __DO NOT__ open any other browser tabs or other programs.
+     1. As players are drafted, hover the mouse over the players name and press `alt+x` to activate the shortcut. This will perform the following actions:
         1. Highlight the first and last name of the player under the mouse
         1. Copy the player's name
         1. Switch to the `player_exclusions.yaml` file
@@ -119,5 +121,6 @@
                             Ranking system (Expert Consesus, ADP, etc). Only
                             Expert Consensus (Rank) supported.
     ```
+
 1. After running `ffb-draft_picker.py`, switch back to the text editor with `player_exclusions.yaml` and validate the cursor is positioned correctly, then switch back to monitoring the draft log.
 1. Continue updating the `data/player_exclusions.yaml` file and running `ffb_draft_picker.py` until your draft is complete!
