@@ -133,8 +133,8 @@ if __name__ == "__main__":
     player_df = initialize_player_stats(
         scoring_system=args.scoring_system, player_exclusions=player_exclusions)
 
-    display_fields = ['Pos', '2018_{}_Pts'.format(args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_Rank', '.vs Rank',
-                      'Best', 'Worst', 'ADP', '.vs ADP', '2018_{}_Pts_Diff'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]
+    display_fields = ['Pos',  '2019_Rank', '.vs Rank', 'ADP', '.vs ADP', '2018_{}_Pts'.format(args.scoring_system), '2018_{}_Pts_Diff'.format(
+        args.scoring_system), '2019_{}_Pts'.format(args.scoring_system), '2019_{}_Pts_Diff'.format(args.scoring_system)]
 
     sleepers_df = pd.DataFrame()
     for position in args.positions:
@@ -165,4 +165,5 @@ if __name__ == "__main__":
 
     if args.show_sleepers:
         if not sleepers_df.empty:
-            print(sleepers_df[display_fields].sort_values('2019_Rank'))
+            print(sleepers_df[display_fields].sort_values(
+                '2019_Rank').head(10))
